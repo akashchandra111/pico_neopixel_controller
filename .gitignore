@@ -1,0 +1,6 @@
+build
+.ccls
+.ccls-cache
+.cache
+.vscode
+*/.ccls-cache
