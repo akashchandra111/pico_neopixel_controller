@@ -14,6 +14,7 @@ add_executable( ${PROJECT_NAME}
 	src/neopixel.c
 	src/pattern.c
 	src/led_commander.c
+	src/basic_math.c
 )
 
 pico_generate_pio_header(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/ws2812b.pio)
@@ -30,6 +31,7 @@ target_link_libraries(${PROJECT_NAME}
 	pico_stdlib 
 	hardware_pio
 	hardware_rtc 
+	hardware_gpio
 	# hardware_adc
 	# harpico_multicore 
 	# harhardware_i2c

@@ -2,8 +2,8 @@
 #define ARRAY_H
 
 #include "default_params.h"
-#include "neopixel.h"
 #include "datatypes.h"
+#include "neopixel.h"
 
 
 typedef struct led_array_t	{

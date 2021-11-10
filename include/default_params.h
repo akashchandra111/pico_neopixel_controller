@@ -2,9 +2,8 @@
 #define DEFAULT_PARAMS
 
 // Elemental types
-#define LED_BUFFER_SIZE 255 
-#define DEF_INTENSITY_FACTOR 0.2f		// setting it to 20% by default
-#define FPS (1000/24)					// 4 FPS
+#define LED_BUFFER_SIZE 60 
+#define FPS (1000/10)					// 10 FPS
 
 // Derived types
 #define TOTAL_LEDS LED_BUFFER_SIZE 

@@ -10,10 +10,11 @@
 #include "../include/led_commander.h"
 #include "../include/neopixel.h"
 #include "../include/pattern.h"
+#include "../include/basic_math.h"
 	
 #define DEBUG 0							// conditional variable to enable debugging
 #define NPIN 0u							// PIN which control the neopixels
-#define LED_INTENSITY 10				// LED intensity in %
+#define LED_INTENSITY .06f				// LED intensity in %
 
 int main()	{
 	stdio_init_all();
@@ -42,17 +43,21 @@ int main()	{
 	rtc_init();
 	rtc_set_datetime(&dt);
 	*/
-
-	while (1)	{
-		pat_rainbow_cycle_all_same(
+	while (true)	{
+		pat_rainbow_cycle_color_cycle_towards_center(
 			led_options.leds_buffer.buffer,
 			led_options.leds_buffer.length
 		);
+		
+		/*
+		pat_bright_to_fro(
+			led_options.leds_buffer.buffer,
+			led_options.leds_buffer.length,
+			get_rgb(0x00, 0xFF, 0x00)
+		);
+		*/
 
 #if DEBUG
-		for (int i=0; i<led_options.leds_buffer.length; ++i)	
-			printf("%x|", led_options.leds_buffer.buffer[i]);
-		printf("\n");
 #endif
 		// Send the rgb data to neopixel in one go
 		led_display(&led_options);
