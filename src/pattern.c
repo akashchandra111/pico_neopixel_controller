@@ -5,31 +5,24 @@
 #include "../include/pattern.h"
 #include "../include/default_params.h"
 
-#define DEBUG 0
-#define COLOR_RANGE (180*3)
-#define IS_REV 1
-
-static RGB_t colors[COLOR_RANGE];	// Global color indexing memory
-
 // Blinks the LED at the current position
-void pat_time(datetime_t *dt, i32 temperature, RGB_t lights[TOTAL_LEDS], i32 length)	{
+void pat_time(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
 	rtc_get_datetime(dt);
 	for (i32 i=0; i<length; ++i)	{
-		bool is_set = false;
-		if (dt->sec == i && (is_set=true))	set_rgb_from_rgb(&lights[i], 255, 0, 0);
-		if (dt->min == i && (is_set=true))	set_rgb_from_rgb(&lights[i], 0, 255, 0);
-		if (dt->hour == i && (is_set=true))	set_rgb_from_rgb(&lights[i], 0, 0, 255);
-		if (dt->dotw == i && (is_set=true))	set_rgb_from_rgb(&lights[i], 128, 128, 0);
-		if (dt->day-1 == i && (is_set=true))	set_rgb_from_rgb(&lights[i], 0, 128, 128);
-		if (dt->month-1 == i && (is_set=true))	set_rgb_from_rgb(&lights[i], 128, 0, 128);
-		if (temperature == i && (is_set=true))	set_rgb_from_rgb(&lights[i], 128, 128, 128);
+		is_pat_set = false;
+		if (dt->sec == i && (is_pat_set=true))	set_rgb_from_rgb(&lights[i], 255, 0, 0);
+		if (dt->min == i && (is_pat_set=true))	set_rgb_from_rgb(&lights[i], 0, 255, 0);
+		if (dt->hour == i && (is_pat_set=true))	set_rgb_from_rgb(&lights[i], 0, 0, 255);
+		if (dt->dotw == i && (is_pat_set=true))	set_rgb_from_rgb(&lights[i], 128, 128, 0);
+		if (dt->day-1 == i && (is_pat_set=true))	set_rgb_from_rgb(&lights[i], 0, 128, 128);
+		if (dt->month-1 == i && (is_pat_set=true))	set_rgb_from_rgb(&lights[i], 128, 0, 128);
 
-		if (!is_set)	set_rgb_from_rgb(&lights[i], 0, 0, 0);
+		if (!is_pat_set)	set_rgb_from_rgb(&lights[i], 0, 0, 0);
 	}
 }
 
 // Blinks the LEDs till the current position
-void pat_time_1(datetime_t *dt, i32 temperature, RGB_t lights[TOTAL_LEDS], i32 length)	{
+void pat_time_1(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
 	static u8 vals[NPIN_TOTAL] = { 0 };
 	for (i32 i=0; i < NPIN_TOTAL; ++i)	vals[i] = 0;
 	vals[dt->sec] = 1;
@@ -49,7 +42,7 @@ void pat_time_1(datetime_t *dt, i32 temperature, RGB_t lights[TOTAL_LEDS], i32 l
 }
 
 // Blinks the LEDs till the current position but in different color
-void pat_time_2(datetime_t *dt, i32 temperature, RGB_t lights[TOTAL_LEDS], i32 length)	{
+void pat_time_2(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
 	static u8 vals[NPIN_TOTAL] = { 0 };
 	for (i32 i=0; i < NPIN_TOTAL; ++i)	vals[i] = 0;
 	vals[dt->sec] = 1;
@@ -80,10 +73,10 @@ void pat_fire(RGB_t lights[TOTAL_LEDS], i32 length)	{
 	const uint32_t colors[4] = { 0xee6501, 0xf36805, 0xd23e02, 0xfbc92d};
 	for (i32 i=0; i<length/4; ++i)	{
 		i32 random_val = rand();
-		lights[(4*i)+0].rgb = colors[random_val%4];
-		lights[(4*i)+1].rgb = colors[(random_val+1)%4];
-		lights[(4*i)+2].rgb = colors[(random_val+2)%4];
-		lights[(4*i)+3].rgb = colors[(random_val+3)%4];
+		set_rgb_from_u32(&lights[(4*i)+0], colors[random_val%4]);
+		set_rgb_from_u32(&lights[(4*i)+1], colors[(random_val+1)%4]);
+		set_rgb_from_u32(&lights[(4*i)+2], colors[(random_val+2)%4]);
+		set_rgb_from_u32(&lights[(4*i)+3], colors[(random_val+3)%4]);
 	}
 }
 
@@ -133,7 +126,6 @@ void set_pat_rainbow_efficient(RGB_t lights[TOTAL_LEDS], i32 length)	{
 }
 
 void pat_rainbow_cycle_all_same(RGB_t lights[TOTAL_LEDS], i32 length)	{
-	static bool is_pat_set = false;
 	static u32 i=0;
 
 	if (!is_pat_set)	{
@@ -148,7 +140,6 @@ void pat_rainbow_cycle_all_same(RGB_t lights[TOTAL_LEDS], i32 length)	{
 }
 
 void pat_rainbow_cycle_color_cycle(RGB_t lights[TOTAL_LEDS], i32 length)	{
-	static bool is_pat_set = false;
 	static u32 i=0;
 	static u32 start = 0, end = 0;
 
@@ -190,14 +181,14 @@ void set_range_to_color(RGB_t lights[TOTAL_LEDS], i32 length, i32 start_index, i
 }
 
 void pat_bouncer(RGB_t lights[TOTAL_LEDS], i32 length, i32 bar_len, RGB_t color)	{
-	static bool is_set = false, is_asc = true;
+	static bool is_asc = true;
 	static u32 start_index = 0, end_index = 0;
 
-	if (!is_set)	{
+	if (!is_pat_set)	{
 		set_range_to_color(lights, length, 0, bar_len, color);
 		start_index = 0;
 		end_index = bar_len-1;
-		is_set = true;
+		is_pat_set = true;
 	}
 
 	if (is_asc && (end_index+1) < length)	{
@@ -238,7 +229,6 @@ void pat_bright_to_fro(RGB_t lights[TOTAL_LEDS], i32 length, RGB_t color)	{
 }
 
 void pat_rainbow_cycle_color_cycle_towards_center(RGB_t lights[TOTAL_LEDS], i32 length)	{
-	static bool is_pat_set = false;
 	static u32 i=0;
 	static u32 start = 0, end = 0;
 

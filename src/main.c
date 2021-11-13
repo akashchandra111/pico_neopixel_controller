@@ -2,8 +2,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-// #include "hardware/rtc.h"
-// #include "pico/util/datetime.h"
+#include "hardware/rtc.h"
+#include "pico/util/datetime.h"
 
 #include "pico/stdlib.h"
 
@@ -14,25 +14,15 @@
 	
 #define DEBUG 0							// conditional variable to enable debugging
 #define NPIN 0u							// PIN which control the neopixels
-#define LED_INTENSITY .06f				// LED intensity in %
+#define LED_INTENSITY .12f				// LED intensity in %
 
 int main()	{
 	stdio_init_all();
-
-	led_opts_t led_options;
-	led_options_init(
-		&led_options, 
-		FPS, 
-		LED_INTENSITY, 
-		TOTAL_LEDS, 
-		NPIN
-	);
-
-	/*
+	
 	// Setup Datetime
-	datetime_t dt = {
+	datetime_t dt = (datetime_t)	{
 		.year = 2021,
-		.month = 10,
+		.month = 11,
 		.day = 15,	// Date
 		.dotw = 6,	// Sunday
 		.hour = 14,
@@ -42,20 +32,28 @@ int main()	{
 
 	rtc_init();
 	rtc_set_datetime(&dt);
-	*/
+
+	led_opts_t led_options;
+	extra_opts_t extra_options = {
+		.temp_color = get_rgb(0, 0xFF, 0),
+		.date_time = &dt
+	};
+
+	led_options_init(
+		&led_options, 
+		FPS, 
+		LED_INTENSITY, 
+		TOTAL_LEDS, 
+		NPIN
+	);
+
+	led_pattern_switch(PATTERN_FIRE);
+
 	while (true)	{
-		pat_rainbow_cycle_color_cycle_towards_center(
-			led_options.leds_buffer.buffer,
-			led_options.leds_buffer.length
+		led_run_current_pattern(
+			&led_options, 
+			&extra_options
 		);
-		
-		/*
-		pat_bright_to_fro(
-			led_options.leds_buffer.buffer,
-			led_options.leds_buffer.length,
-			get_rgb(0x00, 0xFF, 0x00)
-		);
-		*/
 
 #if DEBUG
 #endif

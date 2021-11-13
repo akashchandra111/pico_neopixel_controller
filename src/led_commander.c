@@ -63,7 +63,130 @@ inline void led_buffer_shr(led_opts_t* led_options, const bool is_cyclic)	{
 		led_options->leds_buffer.buffer[i].rgb = led_options->leds_buffer.buffer[i+1].rgb;
 }
 
-inline void led_set_to_rgb_color(led_opts_t* led_options, const RGB_t color_pattern)	{
-	for (int i=0; i<led_options->leds_buffer.length; ++i)
+inline void led_set_to_rgb_color(led_opts_t* led_options, const RGB_t color_pattern, const u32 start, const u32 end)	{
+	for (int i=start, j=0; i <= end && j<led_options->leds_buffer.length; ++i, ++j)
 		set_rgb_from_u32(&led_options->leds_buffer.buffer[i], color_pattern.rgb);
+}
+
+void led_pattern_switch(const pattern_enum pattern_type)	{
+	is_pat_set = false;
+
+	switch(pattern_type)	{
+		case PATTERN_NO_PATTERN:	{
+			current_pattern = PATTERN_NO_PATTERN;
+			break;
+		}
+		case PATTERN_TIME:	{
+			current_pattern = PATTERN_TIME;
+			break;
+		}
+		case PATTERN_TIME_1:		{
+			current_pattern = PATTERN_TIME_1;
+			break;
+		}
+		case PATTERN_TIME_2:		{
+			current_pattern = PATTERN_TIME_2;
+			break;
+		}
+		case PATTERN_FIRE:		{
+			current_pattern = PATTERN_FIRE;
+			break;
+		}
+		case PATTERN_RAINBOW_CYCLE_ALL_SAME:		{
+			current_pattern = PATTERN_RAINBOW_CYCLE_ALL_SAME;
+			break;
+		}
+		case PATTERN_RAINBOW_CYCLE_COLOR_CYCLE:		{
+			current_pattern = PATTERN_RAINBOW_CYCLE_COLOR_CYCLE;
+			break;
+		}
+		case PATTERN_BRIGHT_TO_FRO:		{
+			current_pattern = PATTERN_BRIGHT_TO_FRO;
+			break;
+		}
+		case PATTERN_RAINBOW_CYCLE_TOWARDS_CENTER:		{
+			current_pattern = PATTERN_RAINBOW_CYCLE_TOWARDS_CENTER;
+			break;
+		}
+		default:		{
+			current_pattern = PATTERN_NO_PATTERN;
+		}
+	}
+}
+
+void led_run_current_pattern(led_opts_t* led_options, extra_opts_t *extra_options)	{
+	switch(current_pattern)	{
+		case PATTERN_NO_PATTERN:	{
+			set_range_to_color(
+				led_options->leds_buffer.buffer,
+				led_options->leds_buffer.length,
+				0,
+				led_options->leds_buffer.length-1,
+				extra_options->temp_color
+			);
+			break;
+		}
+		case PATTERN_TIME:	{
+			pat_time(
+				extra_options->date_time,
+				led_options->leds_buffer.buffer,
+				led_options->leds_buffer.length
+			);
+			break;
+		}
+		case PATTERN_TIME_1:		{
+			pat_time_1(
+				extra_options->date_time,
+				led_options->leds_buffer.buffer,
+				led_options->leds_buffer.length
+			);
+			break;
+		}
+		case PATTERN_TIME_2:		{
+			pat_time_2(
+				extra_options->date_time,
+				led_options->leds_buffer.buffer,
+				led_options->leds_buffer.length
+			);
+			break;
+		}
+		case PATTERN_FIRE:		{
+			pat_fire(
+				led_options->leds_buffer.buffer, 
+				led_options->leds_buffer.length
+			);
+			break;
+		}
+		case PATTERN_RAINBOW_CYCLE_ALL_SAME:		{
+			pat_rainbow_cycle_all_same(
+				led_options->leds_buffer.buffer, 
+				led_options->leds_buffer.length
+			);
+			break;
+		}
+		case PATTERN_RAINBOW_CYCLE_COLOR_CYCLE:		{
+			pat_rainbow_cycle_color_cycle(
+				led_options->leds_buffer.buffer, 
+				led_options->leds_buffer.length
+			);
+			break;
+		}
+		case PATTERN_BRIGHT_TO_FRO:		{
+			pat_bright_to_fro(
+				led_options->leds_buffer.buffer, 
+				led_options->leds_buffer.length,
+				extra_options->temp_color
+			);
+			break;
+		}
+		case PATTERN_RAINBOW_CYCLE_TOWARDS_CENTER:		{
+			pat_rainbow_cycle_color_cycle_towards_center(
+				led_options->leds_buffer.buffer, 
+				led_options->leds_buffer.length
+			);
+			break;
+		}
+		default:		{
+		}
+	}
 }
