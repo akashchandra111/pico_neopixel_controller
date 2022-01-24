@@ -1,5 +1,4 @@
-#ifndef DATA_TYPES_H
-#define DATA_TYPES_H
+#pragma once
 
 #include <stdint.h>
 
@@ -14,8 +13,7 @@ typedef int8_t i8;
 typedef int16_t i16; 
 typedef int32_t i32; 
 typedef int64_t i64; 
+
+// Floats
 typedef float f32; 
 typedef double f64; 
-
-#endif
-

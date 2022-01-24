@@ -23,7 +23,7 @@ void pat_time(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
 
 // Blinks the LEDs till the current position
 void pat_time_1(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
-	static u8 vals[NPIN_TOTAL] = { 0 };
+	rtc_get_datetime(dt);
 	for (i32 i=0; i < NPIN_TOTAL; ++i)	vals[i] = 0;
 	vals[dt->sec] = 1;
 	vals[dt->min] = 2;
@@ -34,16 +34,16 @@ void pat_time_1(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
 		if (vals[i] != 0)	current_val = vals[i];
 		if (vals[i] == current_val || (vals[i] == 0 && current_val != 0))	{
 			if (current_val == 0)	set_rgb_from_rgb(&lights[i], 0, 0, 0);
-			else if (current_val == 1)	set_rgb_from_rgb(&lights[i], 255, 0, 0);
-			else if (current_val == 2)	set_rgb_from_rgb(&lights[i], 0, 255, 0);
-			else	set_rgb_from_rgb(&lights[i], 0, 0, 255);
+			else if (current_val == 1)	set_rgb_from_rgb(&lights[i], 255, 160, 122);
+			else if (current_val == 2)	set_rgb_from_rgb(&lights[i], 255, 165, 0);
+			else	set_rgb_from_rgb(&lights[i], 218, 165, 3);
 		}
 	}
 }
 
 // Blinks the LEDs till the current position but in different color
 void pat_time_2(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
-	static u8 vals[NPIN_TOTAL] = { 0 };
+	rtc_get_datetime(dt);
 	for (i32 i=0; i < NPIN_TOTAL; ++i)	vals[i] = 0;
 	vals[dt->sec] = 1;
 	vals[dt->min] = 2;
@@ -54,9 +54,9 @@ void pat_time_2(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
 		if (vals[i] != 0)	current_val = vals[i];
 		if (vals[i] == current_val || (vals[i] == 0 && current_val != 0))	{
 			if (current_val == 0)	set_rgb_from_rgb(&lights[i], 0, 0, 0);
-			else if (current_val == 1)	set_rgb_from_rgb(&lights[i], 127, 127, 0);
-			else if (current_val == 2)	set_rgb_from_rgb(&lights[i], 0, 127, 127);
-			else	set_rgb_from_rgb(&lights[i], 127, 0, 127);
+			else if (current_val == 1)	set_rgb_from_rgb(&lights[i], 255, 127, 80);
+			else if (current_val == 2)	set_rgb_from_rgb(&lights[i], 255, 165, 0);
+			else	set_rgb_from_rgb(&lights[i], 0, 128, 128);
 		}
 	}
 }
@@ -228,7 +228,7 @@ void pat_bright_to_fro(RGB_t lights[TOTAL_LEDS], i32 length, RGB_t color)	{
 	}
 }
 
-void pat_rainbow_cycle_color_cycle_towards_center(RGB_t lights[TOTAL_LEDS], i32 length)	{
+void pat_rainbow_cycle_color_cycle_towards_center(RGB_t lights[TOTAL_LEDS], i32 length, const bool is_rev)	{
 	static u32 i=0;
 	static u32 start = 0, end = 0;
 
@@ -240,7 +240,7 @@ void pat_rainbow_cycle_color_cycle_towards_center(RGB_t lights[TOTAL_LEDS], i32 
 		else	end = length/2 - 1;
 	}
 
-	for (u32 i=0; i<length; ++i)	{
+	for (u32 i=0; i<length/2; ++i)	{
 		if (start < end)	lights[i].rgb = colors[start+i].rgb;
 		else	{
 			const i32 end_offset = (COLOR_RANGE - start - 1);
@@ -258,15 +258,15 @@ void pat_rainbow_cycle_color_cycle_towards_center(RGB_t lights[TOTAL_LEDS], i32 
 		}
 	}
 
-#ifdef IS_REV
-	const u32 half_length = length/2;
-	const u32 fourth_length = length/4;
-	for (u32 i=0; i<fourth_length; ++i)	{
-		u32 temp = lights[(half_length)-1-i].rgb;
-		lights[(half_length)-1-i].rgb = lights[i].rgb;
-		lights[i].rgb = temp;
+	if (is_rev)	{
+		const u32 half_length = length/2;
+		const u32 fourth_length = length/4;
+		for (u32 i=0; i<fourth_length; ++i)	{
+			u32 temp = lights[(half_length)-1-i].rgb;
+			lights[(half_length)-1-i].rgb = lights[i].rgb;
+			lights[i].rgb = temp;
+		}
 	}
-#endif
 
 	for (u32 i=0; i<length/2; ++i)	lights[length-1-i] = lights[i];
 

@@ -71,47 +71,8 @@ inline void led_set_to_rgb_color(led_opts_t* led_options, const RGB_t color_patt
 void led_pattern_switch(const pattern_enum pattern_type)	{
 	is_pat_set = false;
 
-	switch(pattern_type)	{
-		case PATTERN_NO_PATTERN:	{
-			current_pattern = PATTERN_NO_PATTERN;
-			break;
-		}
-		case PATTERN_TIME:	{
-			current_pattern = PATTERN_TIME;
-			break;
-		}
-		case PATTERN_TIME_1:		{
-			current_pattern = PATTERN_TIME_1;
-			break;
-		}
-		case PATTERN_TIME_2:		{
-			current_pattern = PATTERN_TIME_2;
-			break;
-		}
-		case PATTERN_FIRE:		{
-			current_pattern = PATTERN_FIRE;
-			break;
-		}
-		case PATTERN_RAINBOW_CYCLE_ALL_SAME:		{
-			current_pattern = PATTERN_RAINBOW_CYCLE_ALL_SAME;
-			break;
-		}
-		case PATTERN_RAINBOW_CYCLE_COLOR_CYCLE:		{
-			current_pattern = PATTERN_RAINBOW_CYCLE_COLOR_CYCLE;
-			break;
-		}
-		case PATTERN_BRIGHT_TO_FRO:		{
-			current_pattern = PATTERN_BRIGHT_TO_FRO;
-			break;
-		}
-		case PATTERN_RAINBOW_CYCLE_TOWARDS_CENTER:		{
-			current_pattern = PATTERN_RAINBOW_CYCLE_TOWARDS_CENTER;
-			break;
-		}
-		default:		{
-			current_pattern = PATTERN_NO_PATTERN;
-		}
-	}
+	if (pattern_type > PATTERN_TOTAL_PATTERNS)	current_pattern = PATTERN_NO_PATTERN;
+	else	current_pattern = pattern_type;
 }
 
 void led_run_current_pattern(led_opts_t* led_options, extra_opts_t *extra_options)	{
@@ -182,7 +143,16 @@ void led_run_current_pattern(led_opts_t* led_options, extra_opts_t *extra_option
 		case PATTERN_RAINBOW_CYCLE_TOWARDS_CENTER:		{
 			pat_rainbow_cycle_color_cycle_towards_center(
 				led_options->leds_buffer.buffer, 
-				led_options->leds_buffer.length
+				led_options->leds_buffer.length,
+				true
+			);
+			break;
+		}
+		case PATTERN_RAINBOW_CYCLE_AWAY_CENTER:		{
+			pat_rainbow_cycle_color_cycle_towards_center(
+				led_options->leds_buffer.buffer, 
+				led_options->leds_buffer.length,
+				false	
 			);
 			break;
 		}

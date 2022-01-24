@@ -2,10 +2,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "hardware/rtc.h"
-#include "pico/util/datetime.h"
-
 #include "pico/stdlib.h"
+#include "pico/util/datetime.h"
+#include "hardware/rtc.h"
 
 #include "../include/led_commander.h"
 #include "../include/neopixel.h"
@@ -14,7 +13,6 @@
 	
 #define DEBUG 0							// conditional variable to enable debugging
 #define NPIN 0u							// PIN which control the neopixels
-#define LED_INTENSITY .12f				// LED intensity in %
 
 int main()	{
 	stdio_init_all();
@@ -23,10 +21,10 @@ int main()	{
 	datetime_t dt = (datetime_t)	{
 		.year = 2021,
 		.month = 11,
-		.day = 15,	// Date
-		.dotw = 6,	// Sunday
-		.hour = 14,
-		.min = 30,
+		.day = 13,	// Date
+		.dotw = 5,	// Sunday
+		.hour = 18,
+		.min = 0,
 		.sec = 0
 	};
 
@@ -35,7 +33,7 @@ int main()	{
 
 	led_opts_t led_options;
 	extra_opts_t extra_options = {
-		.temp_color = get_rgb(0, 0xFF, 0),
+		.temp_color = get_rgb(0xFF, 0xFF, 0xFF),
 		.date_time = &dt
 	};
 
@@ -47,7 +45,7 @@ int main()	{
 		NPIN
 	);
 
-	led_pattern_switch(PATTERN_FIRE);
+	led_pattern_switch(PATTERN_RAINBOW_CYCLE_COLOR_CYCLE);
 
 	while (true)	{
 		led_run_current_pattern(
