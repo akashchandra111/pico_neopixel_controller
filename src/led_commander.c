@@ -156,6 +156,13 @@ void led_run_current_pattern(led_opts_t* led_options, extra_opts_t *extra_option
 			);
 			break;
 		}
+		case PATTERN_MAP_TEMP:		{
+			pat_map_pico_temp(
+				led_options->leds_buffer.buffer, 
+				led_options->leds_buffer.length
+			);
+			break;
+		}
 		default:		{
 		}
 	}

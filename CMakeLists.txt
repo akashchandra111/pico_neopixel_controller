@@ -33,7 +33,7 @@ target_link_libraries(${PROJECT_NAME}
 	hardware_pio
 	hardware_rtc 
 	hardware_gpio
-	# hardware_adc
+	hardware_adc
 	# harpico_multicore 
 	# harhardware_i2c
 )

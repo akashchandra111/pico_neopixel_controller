@@ -6,7 +6,7 @@
 #include "../include/default_params.h"
 
 // Blinks the LED at the current position
-void pat_time(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
+void pat_time(datetime_t *dt, RGB_t lights[TOTAL_LEDS], u32 length)	{
 	rtc_get_datetime(dt);
 	for (i32 i=0; i<length; ++i)	{
 		is_pat_set = false;
@@ -22,7 +22,7 @@ void pat_time(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
 }
 
 // Blinks the LEDs till the current position
-void pat_time_1(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
+void pat_time_1(datetime_t *dt, RGB_t lights[TOTAL_LEDS], u32 length)	{
 	rtc_get_datetime(dt);
 	for (i32 i=0; i < NPIN_TOTAL; ++i)	vals[i] = 0;
 	vals[dt->sec] = 1;
@@ -42,7 +42,7 @@ void pat_time_1(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
 }
 
 // Blinks the LEDs till the current position but in different color
-void pat_time_2(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
+void pat_time_2(datetime_t *dt, RGB_t lights[TOTAL_LEDS], u32 length)	{
 	rtc_get_datetime(dt);
 	for (i32 i=0; i < NPIN_TOTAL; ++i)	vals[i] = 0;
 	vals[dt->sec] = 1;
@@ -62,14 +62,14 @@ void pat_time_2(datetime_t *dt, RGB_t lights[TOTAL_LEDS], i32 length)	{
 }
 
 // trail pattern
-inline void set_pattern_trailing(RGB_t lights[TOTAL_LEDS], i32 length)	{
+inline void set_pattern_trailing(RGB_t lights[TOTAL_LEDS], u32 length)	{
 	for (i32 i=9; i>=0; --i)	{
 		set_rgb_from_rgb(&lights[10-1-i], (1<<i)%255, (1<<i)%255, (1<<i)%255);
 	}
 	for (i32 i=10; i<length; ++i) set_rgb_from_rgb(&lights[i], 10, 0, 0);
 }
 
-void pat_fire(RGB_t lights[TOTAL_LEDS], i32 length)	{
+void pat_fire(RGB_t lights[TOTAL_LEDS], u32 length)	{
 	const uint32_t colors[4] = { 0xee6501, 0xf36805, 0xd23e02, 0xfbc92d};
 	for (i32 i=0; i<length/4; ++i)	{
 		i32 random_val = rand();
@@ -80,7 +80,7 @@ void pat_fire(RGB_t lights[TOTAL_LEDS], i32 length)	{
 	}
 }
 
-void set_pat_rainbow(RGB_t lights[TOTAL_LEDS], i32 length)	{	// Set 60 colors
+void set_pat_rainbow(RGB_t lights[TOTAL_LEDS], u32 length)	{	// Set 60 colors
 	const u32 pixel_red = (length/3)*0;
 	const u32 pixel_green = (length/3)*1;
 	const u32 pixel_blue = (length/3)*2;
@@ -105,7 +105,7 @@ void set_pat_rainbow(RGB_t lights[TOTAL_LEDS], i32 length)	{	// Set 60 colors
 	}
 }
 
-void set_pat_rainbow_efficient(RGB_t lights[TOTAL_LEDS], i32 length)	{
+void set_pat_rainbow_efficient(RGB_t lights[TOTAL_LEDS], u32 length)	{
 	const u32 pixel_red = (length/3)*0;
 	const u32 pixel_green = (length/3)*1;
 	const u32 pixel_blue = (length/3)*2;
@@ -125,7 +125,7 @@ void set_pat_rainbow_efficient(RGB_t lights[TOTAL_LEDS], i32 length)	{
 	}
 }
 
-void pat_rainbow_cycle_all_same(RGB_t lights[TOTAL_LEDS], i32 length)	{
+void pat_rainbow_cycle_all_same(RGB_t lights[TOTAL_LEDS], u32 length)	{
 	static u32 i=0;
 
 	if (!is_pat_set)	{
@@ -139,7 +139,7 @@ void pat_rainbow_cycle_all_same(RGB_t lights[TOTAL_LEDS], i32 length)	{
 	if (i == COLOR_RANGE) i=0;	
 }
 
-void pat_rainbow_cycle_color_cycle(RGB_t lights[TOTAL_LEDS], i32 length)	{
+void pat_rainbow_cycle_color_cycle(RGB_t lights[TOTAL_LEDS], u32 length)	{
 	static u32 i=0;
 	static u32 start = 0, end = 0;
 
@@ -180,7 +180,7 @@ void set_range_to_color(RGB_t lights[TOTAL_LEDS], i32 length, i32 start_index, i
 			lights[i].rgb = color.rgb;
 }
 
-void pat_bouncer(RGB_t lights[TOTAL_LEDS], i32 length, i32 bar_len, RGB_t color)	{
+void pat_bouncer(RGB_t lights[TOTAL_LEDS], u32 length, u32 bar_len, RGB_t color)	{
 	static bool is_asc = true;
 	static u32 start_index = 0, end_index = 0;
 
@@ -209,7 +209,7 @@ void pat_bouncer(RGB_t lights[TOTAL_LEDS], i32 length, i32 bar_len, RGB_t color)
 	}
 }
 
-void pat_bright_to_fro(RGB_t lights[TOTAL_LEDS], i32 length, RGB_t color)	{
+void pat_bright_to_fro(RGB_t lights[TOTAL_LEDS], u32 length, RGB_t color)	{
 	static i8 brightness= 0;
 	static bool is_asc = true;
 
@@ -228,19 +228,20 @@ void pat_bright_to_fro(RGB_t lights[TOTAL_LEDS], i32 length, RGB_t color)	{
 	}
 }
 
-void pat_rainbow_cycle_color_cycle_towards_center(RGB_t lights[TOTAL_LEDS], i32 length, const bool is_rev)	{
+void pat_rainbow_cycle_color_cycle_towards_center(RGB_t lights[TOTAL_LEDS], u32 length, const bool is_rev)	{
 	static u32 i=0;
 	static u32 start = 0, end = 0;
+	const u32 half_len = length/2;
 
 	if (!is_pat_set)	{
 		set_pat_rainbow_efficient(colors, COLOR_RANGE);
 		is_pat_set = true;
 		start = 0;
-		if (length & 1)	end = length/2;
-		else	end = length/2 - 1;
+		if (length & 1)	end = half_len;
+		else	end = half_len - 1;
 	}
 
-	for (u32 i=0; i<length/2; ++i)	{
+	for (u32 i=0; i<half_len; ++i)	{
 		if (start < end)	lights[i].rgb = colors[start+i].rgb;
 		else	{
 			const i32 end_offset = (COLOR_RANGE - start - 1);
@@ -259,19 +260,58 @@ void pat_rainbow_cycle_color_cycle_towards_center(RGB_t lights[TOTAL_LEDS], i32 
 	}
 
 	if (is_rev)	{
-		const u32 half_length = length/2;
 		const u32 fourth_length = length/4;
 		for (u32 i=0; i<fourth_length; ++i)	{
-			u32 temp = lights[(half_length)-1-i].rgb;
-			lights[(half_length)-1-i].rgb = lights[i].rgb;
+			u32 temp = lights[(half_len)-1-i].rgb;
+			lights[(half_len)-1-i].rgb = lights[i].rgb;
 			lights[i].rgb = temp;
 		}
 	}
 
-	for (u32 i=0; i<length/2; ++i)	lights[length-1-i] = lights[i];
+	for (u32 i=0; i<half_len; ++i)	lights[length-1-i] = lights[i];
 
 	++start;
 	++end;
 	if (start == COLOR_RANGE) start = 0;
 	else if (end == COLOR_RANGE)	end = 0;
+}
+
+void pat_map_pico_temp(RGB_t lights[TOTAL_LEDS], u32 length)	{
+	if (!is_pat_set)	{
+		adc_init();
+		adc_set_temp_sensor_enabled(true);
+		adc_gpio_init(26);	// get data from PIN 26
+		adc_select_input(4);
+		set_pat_rainbow_efficient(colors, COLOR_RANGE);
+		is_pat_set = true;
+	}
+
+	const f32 conversion_factor = 3.3f / (1 << 12);
+	const u16 res = adc_read();
+	const f32 converted_volt = res * conversion_factor;
+	const f32 cold_temp = 10.f;
+	const f32 hot_temp = 30.f;
+	f32 temp = (f32) (27 - (converted_volt - 0.706)/0.001721);
+
+	// Decide extremes and filter the inputs if they exceed
+	if (temp < cold_temp)	{
+		temp = cold_temp;
+	} else if (temp > hot_temp)	{
+		temp = hot_temp;
+	}
+
+	const u32 color_idx = (u32) map_float((f32) cold_temp, (f32) hot_temp, 0.f, (f32) COLOR_RANGE-1, temp);
+
+#if DEBUG
+	printf("res: %d, conv_volt: %f, temp: %f, color_idx: %d\r", res, converted_volt, temp, color_idx);
+#endif
+
+	if (color_idx+length < COLOR_RANGE)	{
+		for (u32 j=0 ; j<length; ++j)	lights[j].rgb = colors[j+color_idx].rgb;
+	} else	{
+		u32 j = 0;
+		const u32 rem = color_idx + length - COLOR_RANGE;
+		for (u32 i=color_idx; i<COLOR_RANGE; ++i)	lights[j++].rgb = colors[i].rgb;
+		for (u32 i=0; i<rem; ++i)	lights[j++].rgb = colors[i].rgb;
+	}
 }

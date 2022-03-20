@@ -45,7 +45,7 @@ int main()	{
 		NPIN
 	);
 
-	led_pattern_switch(PATTERN_RAINBOW_CYCLE_COLOR_CYCLE);
+	led_pattern_switch(PATTERN_MAP_TEMP);
 
 	while (true)	{
 		led_run_current_pattern(
